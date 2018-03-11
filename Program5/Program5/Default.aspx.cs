@@ -92,12 +92,21 @@ namespace Program5
 
         protected void playButton_Click(object sender, EventArgs e)
         {
-            if(ourPlayer == null)
+            int deviceIndex = -1, mediaIndex = -1;
+            try
+            {
+                deviceIndex = devicesListBox.SelectedIndex;
+                mediaIndex = ListBox1.SelectedIndex;
+            }
+            catch (Exception)
             {
                 return;
             }
-            int deviceIndex = devicesListBox.SelectedIndex;
-            int mediaIndex = ListBox1.SelectedIndex;
+            if (ourPlayer == null || mediaIndex == -1 || deviceIndex == -1)
+            {
+                return;
+            }
+
 
             PlaybackContext context = ourPlayer.GetPlayback();
             if (context.Item != null && context.Device.Id != devices.Devices[deviceIndex].Id)
@@ -107,8 +116,6 @@ namespace Program5
 
             ErrorResponse error = ourPlayer.ResumePlayback(devices.Devices[deviceIndex].Id.ToString(),
                 item.Artists.Items[mediaIndex].Uri.ToString());
-
-
         }
     }
 }
