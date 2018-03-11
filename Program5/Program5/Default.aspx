@@ -6,6 +6,8 @@
         <h1>CSS 490 Program 5 by JJ Abides and Peter Stanton</h1>
         <p class="lead">Welcome to our song artist viewer.</p>
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+        <asp:TextBox ID="searchEntryBox" runat="server"></asp:TextBox>
+        <asp:Button ID="searchButton" runat="server" OnClick="searchButton_Click" Text="Search" />
     </div>
 
     <div class="row">
@@ -16,7 +18,10 @@
             A design surface and hundreds of controls and components let you rapidly build sophisticated, powerful UI-driven sites with data access.
             </p>
             <p>
-                <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
+                <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a> tex<asp:ListBox ID="ListBox1" runat="server" Width="669px"></asp:ListBox>
+                <asp:Button ID="authenticateButton" runat="server" OnClick="authenticateButton_Click" Text="login" />
+                <asp:Button ID="getDevicesButton" runat="server" OnClick="getDevicesButton_Click" Text="Load devices" />
+                <asp:Button ID="playButton" runat="server" OnClick="playButton_Click" Text="Play on device" />
             </p>
         </div>
         <div class="col-md-4">
@@ -26,6 +31,7 @@
             </p>
             <p>
                 <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301949">Learn more &raquo;</a>
+                <asp:ListBox ID="devicesListBox" runat="server" Height="57px" Width="717px"></asp:ListBox>
             </p>
         </div>
         <div class="col-md-4">
