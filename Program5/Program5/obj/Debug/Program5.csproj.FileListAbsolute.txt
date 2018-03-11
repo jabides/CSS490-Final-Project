@@ -33,3 +33,12 @@ C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Progra
 C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\obj\Debug\Program5.csprojResolveAssemblyReference.cache
 C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\obj\Debug\Program5.dll
 C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\obj\Debug\Program5.pdb
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\SpotifyAPI.dll
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\SpotifyAPI.xml
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.Azure.KeyVault.Core.dll
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.WindowsAzure.Storage.dll
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.Azure.KeyVault.Core.xml
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.WindowsAzure.Configuration.xml
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.WindowsAzure.Storage.pdb
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.WindowsAzure.Storage.xml
