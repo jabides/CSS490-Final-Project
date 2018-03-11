@@ -48,7 +48,10 @@ namespace Program5
             }
             SearchItem item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist | SearchType.Playlist
                 | SearchType.Album);
-            ListBox1.Items.Add(item.Albums.Total.ToString());
+            for(int i = 0; i < item.Artists.Total; i++)
+            {
+                ListBox1.Items.Add(item.Artists.Items[i].Name.ToString());
+            }
         }
     }
 }
