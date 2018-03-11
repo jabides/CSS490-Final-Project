@@ -24,7 +24,7 @@ namespace Program5
         private static AvailabeDevices devices;
         protected void Page_Load(object sender, EventArgs e)
         {
-            ErrorText.Text = "";
+           
         }
 
         protected void searchButton_Click(object sender, EventArgs e)
@@ -79,6 +79,8 @@ namespace Program5
                 ErrorText.Text = "The previous table is currently being deleted. Please wait a few seconds.";
                 return;
             }
+
+            ErrorText.Text = "Search successfully completed.";
 
             ArtistData artists = new ArtistData();
             for (int i = 0; i < ListBox1.Items.Count; i++)
