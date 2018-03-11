@@ -31,6 +31,7 @@ namespace Program5
             {
                 return;
             }
+            ListBox1.Items.Clear();
             item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist);
             for(int i = 0; i < item.Artists.Total; i++)
             {
@@ -82,6 +83,7 @@ namespace Program5
 
         protected void getDevicesButton_Click(object sender, EventArgs e)
         {
+            devicesListBox.Items.Clear();
             if (ourPlayer == null)
                 return;
             devices = ourPlayer.GetDevices();
@@ -96,6 +98,13 @@ namespace Program5
             }
             int deviceIndex = devicesListBox.SelectedIndex;
             int mediaIndex = ListBox1.SelectedIndex;
+
+            PlaybackContext context = ourPlayer.GetPlayback();
+            if (context.Item != null && context.Device.Id != devices.Devices[deviceIndex].Id)
+            {
+                ErrorResponse changeDevice = ourPlayer.TransferPlayback(devices.Devices[deviceIndex].Id.ToString(),true);
+            }
+
             ErrorResponse error = ourPlayer.ResumePlayback(devices.Devices[deviceIndex].Id.ToString(),
                 item.Artists.Items[mediaIndex].Uri.ToString());
 
