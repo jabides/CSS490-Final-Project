@@ -18,9 +18,9 @@
             A design surface and hundreds of controls and components let you rapidly build sophisticated, powerful UI-driven sites with data access.
             </p>
             <p>
-                <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
-                tex<asp:ListBox ID="ListBox1" runat="server" Width="669px"></asp:ListBox>
-                <asp:Button ID="playButton" runat="server" Text="Play" />
+                <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a> tex<asp:ListBox ID="ListBox1" runat="server" Width="669px"></asp:ListBox>
+                <asp:Button ID="playButton" runat="server" OnClick="playButton_Click" Text="Play" />
+                <asp:Button ID="authenticateButton" runat="server" OnClick="authenticateButton_Click" Text="login" />
             </p>
         </div>
         <div class="col-md-4">
