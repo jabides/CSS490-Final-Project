@@ -22,13 +22,13 @@ namespace Program5 {
         protected global::System.Web.UI.WebControls.TextBox searchEntryBox;
         
         /// <summary>
-        /// searchButtion control.
+        /// searchButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button searchButtion;
+        protected global::System.Web.UI.WebControls.Button searchButton;
         
         /// <summary>
         /// ListBox1 control.
@@ -40,6 +40,15 @@ namespace Program5 {
         protected global::System.Web.UI.WebControls.ListBox ListBox1;
         
         /// <summary>
+        /// authenticateButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button authenticateButton;
+        
+        /// <summary>
         /// playButton control.
         /// </summary>
         /// <remarks>
@@ -49,12 +58,12 @@ namespace Program5 {
         protected global::System.Web.UI.WebControls.Button playButton;
         
         /// <summary>
-        /// authenticateButton control.
+        /// devicesListBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button authenticateButton;
+        protected global::System.Web.UI.WebControls.ListBox devicesListBox;
     }
 }

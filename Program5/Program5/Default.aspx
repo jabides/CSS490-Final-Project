@@ -7,7 +7,7 @@
         <p class="lead">Welcome to our song artist viewer.</p>
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
         <asp:TextBox ID="searchEntryBox" runat="server"></asp:TextBox>
-        <asp:Button ID="searchButtion" runat="server" OnClick="searchButtion_Click" Text="Search" />
+        <asp:Button ID="searchButton" runat="server" Enabled="False" OnClick="searchButtion_Click" Text="Search" />
     </div>
 
     <div class="row">
@@ -19,8 +19,8 @@
             </p>
             <p>
                 <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a> tex<asp:ListBox ID="ListBox1" runat="server" Width="669px"></asp:ListBox>
-                <asp:Button ID="playButton" runat="server" OnClick="playButton_Click" Text="Play" />
                 <asp:Button ID="authenticateButton" runat="server" OnClick="authenticateButton_Click" Text="login" />
+                <asp:Button ID="playButton" runat="server" OnClick="playButton_Click" Text="Play" />
             </p>
         </div>
         <div class="col-md-4">
@@ -30,6 +30,7 @@
             </p>
             <p>
                 <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301949">Learn more &raquo;</a>
+                <asp:ListBox ID="devicesListBox" runat="server" Height="57px" Width="717px"></asp:ListBox>
             </p>
         </div>
         <div class="col-md-4">

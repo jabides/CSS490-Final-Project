@@ -24,7 +24,7 @@ namespace Program5
 
         }
 
-        protected void searchButtion_Click(object sender, EventArgs e)
+        protected void searchButton_Click(object sender, EventArgs e)
         {
             if(String.IsNullOrWhiteSpace(searchEntryBox.Text))
             {
@@ -38,13 +38,6 @@ namespace Program5
             }
         }
 
-        protected void playButton_Click(object sender, EventArgs e)
-        {
-            PrivateProfile user = ourPlayer.GetPrivateProfile();
-            ListBox1.Items.Add(user.DisplayName.ToString());
-
-        }
-
         protected void authenticateButton_Click(object sender, EventArgs e)
         {
             //Create the auth object
@@ -55,10 +48,13 @@ namespace Program5
                 //Set this to localhost if you want to use the built-in HTTP Server
                 RedirectUri = "http://localhost",
                 //How many permissions we need?
-                Scope = Scope.UserReadPrivate,
+                Scope = Scope.UserReadPlaybackState | Scope.Streaming | Scope.UserModifyPlaybackState
+                | Scope.UserReadPrivate
             };
             //This will be called, if the user cancled/accept the auth-request
             auth1.OnResponseReceivedEvent += auth1_OnResponseReceivedEvent;
+            playButton.Enabled = true;
+            searchButton.Enabled = true;
             //a local HTTP Server will be started (Needed for the response)
             auth1.StartHttpServer();
             //This will open the spotify auth-page. The user can decline/accept the request
@@ -73,7 +69,7 @@ namespace Program5
 
             //NEVER DO THIS! You would need to provide the ClientSecret.
             //You would need to do it e.g via a PHP-Script.
-            Token token = auth1.ExchangeAuthCode(response.Code, "XXXXXXXXXXX");
+            Token token = auth1.ExchangeAuthCode(response.Code, "588ddce164f7461283f80be878c43b37");
 
             ourPlayer = new SpotifyWebAPI()
             {
@@ -84,7 +80,14 @@ namespace Program5
             //With the token object, you can now make API calls
 
             //Stop the HTTP Server, done.
-            auth1.StopHttpServer();
+            auth1.StopHttpServer();          
+        }
+
+        protected void playButton_Click1(object sender, EventArgs e)
+        {
+            AvailabeDevices devices = ourPlayer.GetDevices();
+            devices.Devices.ForEach(device => devicesListBox.Items.Add(device.Name));
+
         }
     }
 }
