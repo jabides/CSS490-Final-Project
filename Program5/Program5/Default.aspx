@@ -20,7 +20,8 @@
             <p>
                 <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a> tex<asp:ListBox ID="ListBox1" runat="server" Width="669px"></asp:ListBox>
                 <asp:Button ID="authenticateButton" runat="server" OnClick="authenticateButton_Click" Text="login" />
-                <asp:Button ID="playButton" runat="server" OnClick="playButton_Click" Text="Play" />
+                <asp:Button ID="getDevicesButton" runat="server" OnClick="getDevicesButton_Click" Text="Load devices" />
+                <asp:Button ID="playButton" runat="server" OnClick="playButton_Click" Text="Play on device" />
             </p>
         </div>
         <div class="col-md-4">

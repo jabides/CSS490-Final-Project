@@ -18,7 +18,8 @@ namespace Program5
     {
         static AutorizationCodeAuth auth1;
         private static SpotifyWebAPI ourPlayer;
-        SearchItem item;
+        private static SearchItem item;
+        private static AvailabeDevices devices;
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -30,8 +31,7 @@ namespace Program5
             {
                 return;
             }
-            item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist | SearchType.Playlist
-                | SearchType.Album | SearchType.Track);
+            item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist);
             for(int i = 0; i < item.Artists.Total; i++)
             {
                 ListBox1.Items.Add(item.Artists.Items[i].Name.ToString());
@@ -80,12 +80,25 @@ namespace Program5
             auth1.StopHttpServer();          
         }
 
-        protected void playButton_Click(object sender, EventArgs e)
+        protected void getDevicesButton_Click(object sender, EventArgs e)
         {
             if (ourPlayer == null)
                 return;
-            AvailabeDevices devices = ourPlayer.GetDevices();
+            devices = ourPlayer.GetDevices();
             devices.Devices.ForEach(device => devicesListBox.Items.Add(device.Name));
+        }
+
+        protected void playButton_Click(object sender, EventArgs e)
+        {
+            if(ourPlayer == null)
+            {
+                return;
+            }
+            int deviceIndex = devicesListBox.SelectedIndex;
+            int mediaIndex = ListBox1.SelectedIndex;
+            ErrorResponse error = ourPlayer.ResumePlayback(devices.Devices[deviceIndex].Id.ToString(),
+                item.Artists.Items[mediaIndex].Uri.ToString());
+
 
         }
     }
