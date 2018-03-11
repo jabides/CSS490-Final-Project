@@ -7,7 +7,7 @@
         <p class="lead">Welcome to our song artist viewer.</p>
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
         <asp:TextBox ID="searchEntryBox" runat="server"></asp:TextBox>
-        <asp:Button ID="searchButton" runat="server" Enabled="False" OnClick="searchButtion_Click" Text="Search" />
+        <asp:Button ID="searchButton" runat="server" OnClick="searchButton_Click" Text="Search" />
     </div>
 
     <div class="row">

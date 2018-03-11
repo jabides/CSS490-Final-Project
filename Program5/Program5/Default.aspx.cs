@@ -26,7 +26,7 @@ namespace Program5
 
         protected void searchButton_Click(object sender, EventArgs e)
         {
-            if(String.IsNullOrWhiteSpace(searchEntryBox.Text))
+            if(String.IsNullOrWhiteSpace(searchEntryBox.Text) || ourPlayer == null)
             {
                 return;
             }
@@ -53,13 +53,10 @@ namespace Program5
             };
             //This will be called, if the user cancled/accept the auth-request
             auth1.OnResponseReceivedEvent += auth1_OnResponseReceivedEvent;
-            playButton.Enabled = true;
-            searchButton.Enabled = true;
             //a local HTTP Server will be started (Needed for the response)
             auth1.StartHttpServer();
             //This will open the spotify auth-page. The user can decline/accept the request
-            auth1.DoAuth();
-
+            auth1.DoAuth();       
             Thread.Sleep(60000);
             auth1.StopHttpServer();
             Console.WriteLine("Too long, didnt respond, exiting now...");
@@ -83,8 +80,10 @@ namespace Program5
             auth1.StopHttpServer();          
         }
 
-        protected void playButton_Click1(object sender, EventArgs e)
+        protected void playButton_Click(object sender, EventArgs e)
         {
+            if (ourPlayer == null)
+                return;
             AvailabeDevices devices = ourPlayer.GetDevices();
             devices.Devices.ForEach(device => devicesListBox.Items.Add(device.Name));
 
