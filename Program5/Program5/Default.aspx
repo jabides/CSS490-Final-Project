@@ -6,6 +6,8 @@
         <h1>CSS 490 Program 5 by JJ Abides and Peter Stanton</h1>
         <p class="lead">Welcome to our song artist viewer.</p>
         <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+        <asp:TextBox ID="searchEntryBox" runat="server"></asp:TextBox>
+        <asp:Button ID="searchButtion" runat="server" OnClick="searchButtion_Click" Text="Search" />
     </div>
 
     <div class="row">
@@ -16,7 +18,8 @@
             A design surface and hundreds of controls and components let you rapidly build sophisticated, powerful UI-driven sites with data access.
             </p>
             <p>
-                <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
+                <a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a> tex<asp:ListBox ID="ListBox1" runat="server"></asp:ListBox>
+                <asp:Button ID="playButton" runat="server" Text="Play" />
             </p>
         </div>
         <div class="col-md-4">

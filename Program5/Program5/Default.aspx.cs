@@ -28,7 +28,7 @@ namespace Program5
                 //Your client secret UNSECURE!!
                 ClientSecret = "588ddce164f7461283f80be878c43b37",
                 //How many permissions we need?
-                Scope = Scope.UserReadPrivate,
+                Scope = Scope.UserReadPrivate, 
             };
             //With this token object, we now can make calls
             Token token = auth.DoAuth();
@@ -37,7 +37,18 @@ namespace Program5
                 TokenType = token.TokenType,
                 AccessToken = token.AccessToken,
                 UseAuth = true
-            };
+            }; 
+        }
+
+        protected void searchButtion_Click(object sender, EventArgs e)
+        {
+            if(String.IsNullOrWhiteSpace(searchEntryBox.Text))
+            {
+                return;
+            }
+            SearchItem item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist | SearchType.Playlist
+                | SearchType.Album);
+            ListBox1.Items.Add(item.Albums.Total.ToString());
         }
     }
 }
