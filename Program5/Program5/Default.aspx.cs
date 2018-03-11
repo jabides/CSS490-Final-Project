@@ -33,13 +33,13 @@ namespace Program5
             {
                 return;
             }
-            ListBox1.Items.Clear();
+            ListBox2.Items.Clear();
 
-
+            item = null;
             item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist);
-            for (int i = 0; i < item.Artists.Total; i++)
+            for (int i = 0; i < item.Artists.Items.Count; i++)
             {
-                ListBox1.Items.Add(item.Artists.Items[i].Name.ToString());
+                ListBox2.Items.Add(item.Artists.Items[i].Name.ToString());
             }
 
             CloudStorageAccount myAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
@@ -47,8 +47,16 @@ namespace Program5
             CloudBlobContainer container = blobClient.GetContainerReference("css490finalproject"); //Our blob for collecting searches
             container.CreateIfNotExists();
             CloudBlockBlob myBlob = container.GetBlockBlobReference("spotifysearchresults.txt"); //The text file for storing the searches
+            string contents = "";
+            try
+            {
+                contents = myBlob.DownloadText();
+            }
+            catch (Exception g)
+            {
 
-            string contents = myBlob.DownloadText();
+            }
+
             myBlob.UploadText(contents + searchEntryBox.Text + "\n");       //This is how we add the search result to the list of search results in blob
 
 
@@ -67,29 +75,24 @@ namespace Program5
                 return;
             }
 
-            if (table.Exists()) //How do we update the table without deleting?
-                table.Delete();
 
             try
             {
-                table.Create();
+                table.CreateIfNotExists();
             }
-            catch (Exception k)
+            catch (Exception l)
             {
-                ErrorText.Text = "The previous table is currently being deleted. Please wait a few seconds.";
-                return;
+                ErrorText.Text = "Error: Could not create table...";
             }
 
             ErrorText.Text = "Search successfully completed.";
 
             ArtistData artists = new ArtistData();
-            for (int i = 0; i < ListBox1.Items.Count; i++)
-            {
-                //This is where we add artists one by one
-            }
 
 
         }
+
+        
 
         protected void authenticateButton_Click(object sender, EventArgs e)
         {
@@ -142,6 +145,19 @@ namespace Program5
                 entity.PartitionKey = partitionKey;
                 entity.RowKey = rowKey;
 
+            }
+        }
+
+        protected void ListBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ListBox2.SelectedValue == "") return;
+            item = ourPlayer.SearchItems(ListBox2.SelectedValue, SearchType.Album);
+
+            ListBox2.Items.Clear();
+
+            for (int i = 0; i < item.Albums.Total; i++)
+            {
+                ListBox2.Items.Add(item.Albums.Items[i].Name.ToString());
             }
         }
     }

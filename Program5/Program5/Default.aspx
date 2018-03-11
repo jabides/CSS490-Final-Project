@@ -18,7 +18,7 @@
         <div class="col-md-4">
             <p>
     
-                <asp:ListBox ID="ListBox1" runat="server" Width="669px"></asp:ListBox>
+              
                 <br />
                 <asp:Button ID="authenticateButton" runat="server" OnClick="authenticateButton_Click" Text="login" />
             </p>
@@ -26,7 +26,8 @@
         <div class="col-md-4">
             <p>
                 
-                &nbsp;</p>
+                <asp:ListBox ID="ListBox2" runat="server" Width="663px" OnSelectedIndexChanged="ListBox2_SelectedIndexChanged"></asp:ListBox>
+            </p>
         </div>
         <div class="col-md-4">
           

@@ -18,18 +18,15 @@
         <div class="col-md-4">
             <p>
     
-                <asp:ListBox ID="ListBox1" runat="server" Width="669px"></asp:ListBox>
+                <asp:ListBox ID="ListBox1" runat="server" Width="669px" OnSelectedIndexChanged="ListBox1_SelectedIndexChanged"></asp:ListBox>
                 <br />
                 <asp:Button ID="authenticateButton" runat="server" OnClick="authenticateButton_Click" Text="login" />
-                <asp:Button ID="getDevicesButton" runat="server" OnClick="getDevicesButton_Click" Text="Load devices" />
-                <asp:Button ID="playButton" runat="server" OnClick="playButton_Click" Text="Play on device" />
             </p>
         </div>
         <div class="col-md-4">
             <p>
                 
-                <asp:ListBox ID="devicesListBox" runat="server" Height="57px" Width="717px"></asp:ListBox>
-            </p>
+                &nbsp;</p>
         </div>
         <div class="col-md-4">
           
