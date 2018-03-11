@@ -76,7 +76,6 @@ namespace Program5
             };
 
             //With the token object, you can now make API calls
-
             //Stop the HTTP Server, done.
             auth1.StopHttpServer();          
         }
