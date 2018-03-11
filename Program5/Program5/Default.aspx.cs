@@ -18,26 +18,26 @@ namespace Program5
 {
     public partial class _Default : Page
     {
-        static AutorizationCodeAuth auth1;
+        static ClientCredentialsAuth auth;
         private static SpotifyWebAPI ourPlayer;
         private static SearchItem item;
         private static AvailabeDevices devices;
         protected void Page_Load(object sender, EventArgs e)
         {
-           
+
         }
 
         protected void searchButton_Click(object sender, EventArgs e)
         {
-            if(String.IsNullOrWhiteSpace(searchEntryBox.Text) || ourPlayer == null)
+            if (String.IsNullOrWhiteSpace(searchEntryBox.Text) || ourPlayer == null)
             {
                 return;
             }
             ListBox1.Items.Clear();
-            
+
 
             item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist);
-            for(int i = 0; i < item.Artists.Total; i++)
+            for (int i = 0; i < item.Artists.Total; i++)
             {
                 ListBox1.Items.Add(item.Artists.Items[i].Name.ToString());
             }
@@ -57,7 +57,7 @@ namespace Program5
             CloudTable table = null;
             try
             {
-                
+
                 tableClient = myAccount.CreateCloudTableClient();
                 table = tableClient.GetTableReference("Artists");
             }
@@ -87,119 +87,101 @@ namespace Program5
             {
                 //This is where we add artists one by one
             }
-            
+
 
         }
 
         protected void authenticateButton_Click(object sender, EventArgs e)
         {
             //Create the auth object
-            auth1 = new AutorizationCodeAuth()
+            auth = new ClientCredentialsAuth()
             {
                 //Your client Id
                 ClientId = "233de2f259b54609bedb58dfe5f037d7",
-                //Set this to localhost if you want to use the built-in HTTP Server
-                RedirectUri = "http://localhost",
+                //Your client secret UNSECURE!!
+                ClientSecret = "588ddce164f7461283f80be878c43b37",
                 //How many permissions we need?
-                Scope = Scope.UserReadPlaybackState | Scope.Streaming | Scope.UserModifyPlaybackState
-                | Scope.UserReadPrivate
+                Scope = Scope.UserReadPrivate,
             };
-            //This will be called, if the user cancled/accept the auth-request
-            auth1.OnResponseReceivedEvent += auth1_OnResponseReceivedEvent;
-            //a local HTTP Server will be started (Needed for the response)
-            auth1.StartHttpServer();
-            //This will open the spotify auth-page. The user can decline/accept the request
-            auth1.DoAuth();       
-            Thread.Sleep(60000);
-            auth1.StopHttpServer();
-            Console.WriteLine("Too long, didnt respond, exiting now...");
-        }
-        private static void auth1_OnResponseReceivedEvent(AutorizationCodeAuthResponse response)
-        {
-
-            //NEVER DO THIS! You would need to provide the ClientSecret.
-            //You would need to do it e.g via a PHP-Script.
-            Token token = auth1.ExchangeAuthCode(response.Code, "588ddce164f7461283f80be878c43b37");
-
+            //With this token object, we now can make calls
+            Token token = auth.DoAuth();
             ourPlayer = new SpotifyWebAPI()
             {
                 TokenType = token.TokenType,
-                AccessToken = token.AccessToken
+                AccessToken = token.AccessToken,
+                UseAuth = true
             };
-
-            //With the token object, you can now make API calls
-            //Stop the HTTP Server, done.
-            auth1.StopHttpServer();          
         }
 
-        protected void getDevicesButton_Click(object sender, EventArgs e)
+        public class ArtistData
         {
-            devicesListBox.Items.Clear();
-            if (ourPlayer == null)
-                return;
-            devices = ourPlayer.GetDevices();
-            devices.Devices.ForEach(device => devicesListBox.Items.Add(device.Name));
-        }
+            public List<DynamicTableEntity> UserDataList;
+            public Dictionary<string, EntityProperty> data;
+            public DynamicTableEntity entity = null;
 
-        protected void playButton_Click(object sender, EventArgs e)
-        {
-            int deviceIndex = -1, mediaIndex = -1;
-            try
+            public ArtistData()
             {
-                deviceIndex = devicesListBox.SelectedIndex;
-                mediaIndex = ListBox1.SelectedIndex;
-            }
-            catch (Exception)
-            {
-                return;
-            }
-            if (ourPlayer == null || mediaIndex == -1 || deviceIndex == -1)
-            {
-                return;
+                UserDataList = new List<DynamicTableEntity>();
             }
 
-
-            PlaybackContext context = ourPlayer.GetPlayback();
-            if (context.Item != null && context.Device.Id != devices.Devices[deviceIndex].Id)
+            public void addAttribute(string key, string value)
             {
-                ErrorResponse changeDevice = ourPlayer.TransferPlayback(devices.Devices[deviceIndex].Id.ToString(),true);
+                data.Add(key, new EntityProperty(value));
             }
 
-            ErrorResponse error = ourPlayer.ResumePlayback(devices.Devices[deviceIndex].Id.ToString(),
-                item.Artists.Items[mediaIndex].Uri.ToString());
-        }
-    }
+            public void addEntityToDataList()
+            {
+                entity.Properties = data;
+                UserDataList.Add(entity);
+            }
 
+            public void createNewEntity(string partitionKey, string rowKey)
+            {
+                entity = new DynamicTableEntity();
+                data = new Dictionary<string, EntityProperty>();
+                entity.PartitionKey = partitionKey;
+                entity.RowKey = rowKey;
 
-    public class ArtistData
-    {
-        public List<DynamicTableEntity> UserDataList;
-        public Dictionary<string, EntityProperty> data;
-        public DynamicTableEntity entity = null;
-
-        public ArtistData()
-        {
-            UserDataList = new List<DynamicTableEntity>();
-        }
-
-        public void addAttribute(string key, string value)
-        {
-            data.Add(key, new EntityProperty(value));
-        }
-
-        public void addEntityToDataList()
-        {
-            entity.Properties = data;
-            UserDataList.Add(entity);
-        }
-
-        public void createNewEntity(string partitionKey, string rowKey)
-        {
-            entity = new DynamicTableEntity();
-            data = new Dictionary<string, EntityProperty>();
-            entity.PartitionKey = partitionKey;
-            entity.RowKey = rowKey;
-
+            }
         }
     }
 }
+
+/*
+protected void getDevicesButton_Click(object sender, EventArgs e)
+{
+    devicesListBox.Items.Clear();
+    if (ourPlayer == null)
+        return;
+    devices = ourPlayer.GetDevices();
+    devices.Devices.ForEach(device => devicesListBox.Items.Add(device.Name));
+}
+
+protected void playButton_Click(object sender, EventArgs e)
+{
+    int deviceIndex = -1, mediaIndex = -1;
+    try
+    {
+        deviceIndex = devicesListBox.SelectedIndex;
+        mediaIndex = ListBox1.SelectedIndex;
+    }
+    catch (Exception)
+    {
+        return;
+    }
+    if (ourPlayer == null || mediaIndex == -1 || deviceIndex == -1)
+    {
+        return;
+    }
+
+
+    PlaybackContext context = ourPlayer.GetPlayback();
+    if (context.Item != null && context.Device.Id != devices.Devices[deviceIndex].Id)
+    {
+        ErrorResponse changeDevice = ourPlayer.TransferPlayback(devices.Devices[deviceIndex].Id.ToString(),true);
+    }
+
+    ErrorResponse error = ourPlayer.ResumePlayback(devices.Devices[deviceIndex].Id.ToString(),
+        item.Artists.Items[mediaIndex].Uri.ToString());
+}
+} */
