@@ -88,3 +88,23 @@ C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Pr
 C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.WindowsAzure.Storage.xml
 C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\obj\Debug\Program5.csprojResolveAssemblyReference.cache
 C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\obj\Debug\Program5.csprojResolveAssemblyReference.cache
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\ApplicationInsights.config
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.Agent.Intercept.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.DependencyCollector.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.PerfCounterCollector.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.ServerTelemetryChannel.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.Web.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.WindowsServer.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.ApplicationInsights.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\System.Net.Http.Extensions.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\System.Net.Http.Primitives.dll
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.DependencyCollector.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.ServerTelemetryChannel.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.Web.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.AI.WindowsServer.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\Microsoft.ApplicationInsights.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\System.Diagnostics.DiagnosticSource.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\System.Net.Http.Extensions.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\bin\System.Net.Http.Primitives.xml
+C:\Users\Peter\Desktop\Cloud Computing\Program5\CSS490-Final-Project\Program5\Program5\obj\Debug\Program5.csproj.App.config

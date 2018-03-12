@@ -15,6 +15,8 @@ using Microsoft.Azure;     //Configuration manager
 using Microsoft.WindowsAzure.Storage;   //For storage in general
 using System.IO;
 using Microsoft.ApplicationInsights;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace Program5
 {
@@ -24,10 +26,11 @@ namespace Program5
         static ClientCredentialsAuth auth;
         private static SpotifyWebAPI ourPlayer;
         private static SearchItem item;
-        private static AvailabeDevices devices;
         private static int state;
-        private const String musicURL = @"https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=jsonp&callback=callback"; //&q_track=Black%20Diamonds&q_artist=Therion
+        private const String musicURL = @"https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=jsonp&callback=callback";
+        //&q_track=Black%20Diamonds&q_artist=Therion
         private const string apiKey = "&apikey=c1efc87437d8289718e51d58de5be083";
+        private string inTrack, inArtist;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -62,7 +65,7 @@ namespace Program5
             {
                 contents = myBlob.DownloadText() + "\n";
             }
-            catch (Exception g)
+            catch (Exception)
             {
 
             }
@@ -79,7 +82,7 @@ namespace Program5
                 tableClient = myAccount.CreateCloudTableClient();
                 table = tableClient.GetTableReference("Artists");
             }
-            catch (Exception l)
+            catch (Exception)
             {
                 ErrorText.Text = "Error: Problem connecting to cloud table.";
                 return;
@@ -90,7 +93,7 @@ namespace Program5
             {
                 table.CreateIfNotExists();
             }
-            catch (Exception l)
+            catch (Exception)
             {
                 ErrorText.Text = "Error: Could not create table...";
             }
@@ -154,7 +157,6 @@ namespace Program5
                 data = new Dictionary<string, EntityProperty>();
                 entity.PartitionKey = partitionKey;
                 entity.RowKey = rowKey;
-
             }
         }
 
@@ -173,6 +175,8 @@ namespace Program5
             {
                 item = ourPlayer.SearchItems(ListBox2.Items[ListBox2.SelectedIndex].Text, SearchType.Album);
                 ErrorText.Text = "Selected Artist: " + ListBox2.Items[ListBox2.SelectedIndex].Text;
+                inArtist = ListBox2.Items[ListBox2.SelectedIndex].Text;
+                inArtist.Replace(' ', '%');
                 Label1.Text = "List of Albums";
                 ListBox2.Items.Clear();
 
@@ -197,7 +201,25 @@ namespace Program5
                     ListBox2.Items.Add(item.Tracks.Items[i].Name.ToString());
                 }
 
-                state = 0;
+                if (ListBox2.Items.Count > 0) state = 3;
+            }
+            else if (state == 3)
+            {
+                inTrack = ListBox2.Items[ListBox2.SelectedIndex].Text;
+                Regex pattern = new Regex(@"\s+");
+                pattern.Replace(inTrack, "%");
+                //&q_track=Black%20Diamonds&q_artist=Therion
+                HttpResponseMessage msg = new HttpResponseMessage();
+                using (var client = new HttpClient())
+                {
+                    Uri target = new Uri(musicURL + "&q_track=" + inTrack + "&q_artist=" + inArtist + apiKey);
+                    if(Uri.IsWellFormedUriString(target.AbsoluteUri.ToString(),UriKind.Absolute))
+                    {
+                        msg = client.GetAsync(target.AbsoluteUri).Result;
+                    }
+                    String result = String.Empty;
+                    result = msg.Content.ReadAsStringAsync().Result;
+                }
             }
         }
     }
