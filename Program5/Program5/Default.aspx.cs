@@ -82,7 +82,7 @@ namespace Program5
             {
 
                 tableClient = myAccount.CreateCloudTableClient();
-                artistcloudtable = tableClient.GetTableReference("artistsproject");
+                artistcloudtable = tableClient.GetTableReference("Artists");
             }
             catch (Exception)
             {
