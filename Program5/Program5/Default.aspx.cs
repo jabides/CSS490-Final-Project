@@ -14,6 +14,7 @@ using Microsoft.WindowsAzure.Storage.Table;  //For table storage
 using Microsoft.Azure;     //Configuration manager
 using Microsoft.WindowsAzure.Storage;   //For storage in general
 using System.IO;
+using Microsoft.ApplicationInsights;
 
 namespace Program5
 {
@@ -25,6 +26,7 @@ namespace Program5
         private static SearchItem item;
         private static AvailabeDevices devices;
         private static int state;
+        
 
         protected void Page_Load(object sender, EventArgs e)
         {
