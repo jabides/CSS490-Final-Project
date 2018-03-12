@@ -252,7 +252,7 @@ namespace Program5
                             if (lyricParsed.ElementAt(i).Contains(":"))
                             {
                                 lyricsBox.Text = lyricParsed.ElementAt(i + 1).ToString().Replace("******* This Lyrics is NOT " +
-                                    "for Commercial use *******", "");
+                                    "for Commercial use *******", "").Replace(@"\n", Environment.NewLine);
                             }
                         }
                     }
