@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 
 namespace Program5
 {
-    
+
     public partial class _Default : Page
     {
         static ClientCredentialsAuth auth;
@@ -34,7 +34,7 @@ namespace Program5
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         protected void searchButton_Click(object sender, EventArgs e)
@@ -105,7 +105,7 @@ namespace Program5
 
         }
 
-        
+
 
         protected void authenticateButton_Click(object sender, EventArgs e)
         {
@@ -162,7 +162,7 @@ namespace Program5
 
         protected void ListBox2_OnClick(object sender, EventArgs e)
         {
-            
+
         }
         protected void ListBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -206,24 +206,54 @@ namespace Program5
             else if (state == 3)
             {
                 inTrack = ListBox2.Items[ListBox2.SelectedIndex].Text;
-                Regex pattern = new Regex(@"\s+");
-                pattern.Replace(inTrack, "%");
+                Regex spacer = new Regex(@"\s+");
+                //     Regex lyrics = new Regex(@"")
+                spacer.Replace(inTrack, "%");
                 //&q_track=Black%20Diamonds&q_artist=Therion
                 HttpResponseMessage msg = new HttpResponseMessage();
                 using (var client = new HttpClient())
                 {
                     Uri target = new Uri(musicURL + "&q_track=" + inTrack + "&q_artist=" + inArtist + apiKey);
-                    if(Uri.IsWellFormedUriString(target.AbsoluteUri.ToString(),UriKind.Absolute))
+                    if (Uri.IsWellFormedUriString(target.AbsoluteUri.ToString(), UriKind.Absolute))
                     {
                         msg = client.GetAsync(target.AbsoluteUri).Result;
                     }
                     String result = String.Empty;
                     result = msg.Content.ReadAsStringAsync().Result;
+                    List<String> parsed = new List<string>();
+                    parsed = result.Split(',').ToList();
+                    String match = String.Empty;
+                    for (int i = 0; i < parsed.Count; i++)
+                    {
+                        if (parsed.ElementAt(i).Contains("lyrics_body"))
+                        {
+                            match = parsed.ElementAt(i);
+                            break;
+                        }
+                    }
+                    if (match.Equals(String.Empty))
+                    {
+                        ErrorText.Text = "This song has no lyrics, please try another search.";
+                        state = 0; //reset.
+                        return;
+                    }
+                    List<String> lyricParsed = new List<string>();
+                    lyricParsed = match.Split('"').ToList();
+                    for (int i = 0; i < lyricParsed.Count; i++)
+                    {
+                        if (lyricParsed.ElementAt(i).Contains(":"))
+                        {
+                            lyricsBox.Text = lyricParsed.ElementAt(i + 1).ToString().Replace("******* This Lyrics is NOT " +
+                                "for Commercial use *******", "");
+                            return;
+                        }
+                    }
                 }
             }
         }
     }
 }
+
 
 /*
 protected void getDevicesButton_Click(object sender, EventArgs e)
