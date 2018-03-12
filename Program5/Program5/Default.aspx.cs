@@ -25,6 +25,8 @@ namespace Program5
         private static SearchItem item;
         private static AvailabeDevices devices;
         private static int state;
+        private const String musicURL = @"https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=jsonp&callback=callback"; //&q_track=Black%20Diamonds&q_artist=Therion
+        private const string apiKey = "&apikey=c1efc87437d8289718e51d58de5be083";
 
         protected void Page_Load(object sender, EventArgs e)
         {
