@@ -12,6 +12,7 @@
         <asp:Label ID="ErrorText" runat="server"></asp:Label>
         <br />
         <asp:Button ID="searchButton" runat="server" OnClick="searchButton_Click" Text="Search" />
+        <asp:TextBox ID="lyricsBox" runat="server" Height="72px" TextMode="MultiLine" Width="263px"></asp:TextBox>
     </div>
 
     <div class="row">

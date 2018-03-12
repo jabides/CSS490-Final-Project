@@ -10,27 +10,33 @@ using SpotifyAPI.Web.Auth; //All Authentication-related classes
 using SpotifyAPI.Web.Enums; //Enums
 using SpotifyAPI.Web.Models; //Models for the JSON-responses
 using Microsoft.WindowsAzure.Storage.Blob;   //For blob storage
-using Microsoft.WindowsAzure.Storage.Table;  //For table storage
+using Microsoft.WindowsAzure.Storage.Table;  //For artistcloudtable storage
 using Microsoft.Azure;     //Configuration manager
 using Microsoft.WindowsAzure.Storage;   //For storage in general
 using System.IO;
 using Microsoft.ApplicationInsights;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace Program5
 {
-    
+
     public partial class _Default : Page
     {
         static ClientCredentialsAuth auth;
         private static SpotifyWebAPI ourPlayer;
         private static SearchItem item;
-        private static AvailabeDevices devices;
         private static int state;
-        
+        private const String musicURL = @"https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?format=jsonp&callback=callback";
+        //&q_track=Black%20Diamonds&q_artist=Therion
+        private const string apiKey = "&apikey=c1efc87437d8289718e51d58de5be083";
+        private static string inTrack, inArtist, inAlbum;
+        private static CloudTable artistcloudtable;
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         protected void searchButton_Click(object sender, EventArgs e)
@@ -61,7 +67,7 @@ namespace Program5
             {
                 contents = myBlob.DownloadText() + "\n";
             }
-            catch (Exception g)
+            catch (Exception)
             {
 
             }
@@ -69,29 +75,29 @@ namespace Program5
             myBlob.UploadText(contents + searchEntryBox.Text + "\n");       //This is how we add the search result to the list of search results in blob
 
 
-            //This is where we add the list of artists to the table
+            //This is where we add the list of artists to the artistcloudtable
             CloudTableClient tableClient = null;
-            CloudTable table = null;
+            artistcloudtable = null;
             try
             {
 
                 tableClient = myAccount.CreateCloudTableClient();
-                table = tableClient.GetTableReference("Artists");
+                artistcloudtable = tableClient.GetTableReference("Artists");
             }
-            catch (Exception l)
+            catch (Exception)
             {
-                ErrorText.Text = "Error: Problem connecting to cloud table.";
+                ErrorText.Text = "Error: Problem connecting to cloud artistcloudtable.";
                 return;
             }
 
 
             try
             {
-                table.CreateIfNotExists();
+                artistcloudtable.CreateIfNotExists();
             }
-            catch (Exception l)
+            catch (Exception)
             {
-                ErrorText.Text = "Error: Could not create table...";
+                ErrorText.Text = "Error: Could not create artistcloudtable...";
             }
 
             ErrorText.Text = "Search successfully completed.";
@@ -101,7 +107,7 @@ namespace Program5
 
         }
 
-        
+
 
         protected void authenticateButton_Click(object sender, EventArgs e)
         {
@@ -153,13 +159,12 @@ namespace Program5
                 data = new Dictionary<string, EntityProperty>();
                 entity.PartitionKey = partitionKey;
                 entity.RowKey = rowKey;
-
             }
         }
 
         protected void ListBox2_OnClick(object sender, EventArgs e)
         {
-            
+
         }
         protected void ListBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -172,6 +177,8 @@ namespace Program5
             {
                 item = ourPlayer.SearchItems(ListBox2.Items[ListBox2.SelectedIndex].Text, SearchType.Album);
                 ErrorText.Text = "Selected Artist: " + ListBox2.Items[ListBox2.SelectedIndex].Text;
+                inArtist = ListBox2.Items[ListBox2.SelectedIndex].Text;
+                inArtist.Replace(' ', '%');
                 Label1.Text = "List of Albums";
                 ListBox2.Items.Clear();
 
@@ -183,11 +190,13 @@ namespace Program5
                 if (ListBox2.Items.Count > 0) state = 2;
                 else state = 0;
             }
+        
 
             else if (state == 2)
             {
                 item = ourPlayer.SearchItems(ListBox2.Items[ListBox2.SelectedIndex].Text, SearchType.Track);
                 ErrorText.Text = "Selected Album: " + ListBox2.Items[ListBox2.SelectedIndex].Text;
+                inAlbum = ListBox2.Items[ListBox2.SelectedIndex].Text;
                 Label1.Text = "List of Tracks";
                 ListBox2.Items.Clear();
 
@@ -196,11 +205,75 @@ namespace Program5
                     ListBox2.Items.Add(item.Tracks.Items[i].Name.ToString());
                 }
 
-                state = 0;
+                if (ListBox2.Items.Count > 0) state = 3;
             }
-        }
+            else if (state == 3)
+            {
+                bool hasLyrics = true;
+                inTrack = ListBox2.Items[ListBox2.SelectedIndex].Text;
+                Regex spacer = new Regex(@"\s+");
+                //     Regex lyrics = new Regex(@"")
+                spacer.Replace(inTrack, "%");
+                //&q_track=Black%20Diamonds&q_artist=Therion
+                HttpResponseMessage msg = new HttpResponseMessage();
+                using (var client = new HttpClient())
+                {
+                    Uri target = new Uri(musicURL + "&q_track=" + inTrack + "&q_artist=" + inArtist + apiKey);
+                    if (Uri.IsWellFormedUriString(target.AbsoluteUri.ToString(), UriKind.Absolute))
+                    {
+                        msg = client.GetAsync(target.AbsoluteUri).Result;
+                    }
+                    String result = String.Empty;
+                    result = msg.Content.ReadAsStringAsync().Result;
+                    List<String> parsed = new List<string>();
+                    parsed = result.Split(',').ToList();
+                    String match = String.Empty;
+                    for (int i = 0; i < parsed.Count; i++)
+                    {
+                        if (parsed.ElementAt(i).Contains("lyrics_body"))
+                        {
+                            match = parsed.ElementAt(i);
+                            break;
+                        }
+                    }
+                    if (match.Equals(String.Empty))
+                    {
+                        ErrorText.Text = "This song has no lyrics, please try another search.";
+                        state = 0; //reset.    
+                        hasLyrics = false;
+                    }
+                    if (hasLyrics)
+                    {
+                        List<String> lyricParsed = new List<string>();
+                        lyricParsed = match.Split('"').ToList();
+
+                        for (int i = 0; i < lyricParsed.Count; i++)
+                        {
+                            if (lyricParsed.ElementAt(i).Contains(":"))
+                            {
+                                lyricsBox.Text = lyricParsed.ElementAt(i + 1).ToString().Replace("******* This Lyrics is NOT " +
+                                    "for Commercial use *******", "").Replace(@"\n", Environment.NewLine);
+                            }
+                        }
+                    }
+                }
+                //create artistcloudtable entry here.
+                DynamicTableEntity searchRecord = new DynamicTableEntity();
+                Dictionary<string, EntityProperty> data1 = new Dictionary<string, EntityProperty>();
+                data1.Add("artist", new EntityProperty(inArtist));
+                data1.Add("album", new EntityProperty(inAlbum));
+                data1.Add("track", new EntityProperty(inTrack));
+                data1.Add("lyrics", new EntityProperty(hasLyrics));    
+                searchRecord.Properties = data1;
+                searchRecord.PartitionKey = "project490partition";
+                searchRecord.RowKey = Convert.ToString(DateTime.UtcNow.Ticks.ToString("d20"));
+                var updater = TableOperation.InsertOrReplace(searchRecord);
+                artistcloudtable.Execute(updater);
+            }
+        } //end of listbox2 click.
     }
 }
+
 
 /*
 protected void getDevicesButton_Click(object sender, EventArgs e)
