@@ -13,34 +13,41 @@ using Microsoft.WindowsAzure.Storage.Blob;   //For blob storage
 using Microsoft.WindowsAzure.Storage.Table;  //For table storage
 using Microsoft.Azure;     //Configuration manager
 using Microsoft.WindowsAzure.Storage;   //For storage in general
+using System.IO;
 
 namespace Program5
 {
+    
     public partial class _Default : Page
     {
         static ClientCredentialsAuth auth;
         private static SpotifyWebAPI ourPlayer;
         private static SearchItem item;
         private static AvailabeDevices devices;
+        private static int state;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         protected void searchButton_Click(object sender, EventArgs e)
         {
+            state = 0;
             if (String.IsNullOrWhiteSpace(searchEntryBox.Text) || ourPlayer == null)
             {
                 return;
             }
             ListBox2.Items.Clear();
-
+            Label1.Text = "List of artists";
             item = null;
             item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist);
             for (int i = 0; i < item.Artists.Items.Count; i++)
             {
                 ListBox2.Items.Add(item.Artists.Items[i].Name.ToString());
             }
+
+            if (ListBox2.Items.Count > 0) state = 1; //This allows for the user to click on an album
 
             CloudStorageAccount myAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
             CloudBlobClient blobClient = myAccount.CreateCloudBlobClient();
@@ -50,7 +57,7 @@ namespace Program5
             string contents = "";
             try
             {
-                contents = myBlob.DownloadText();
+                contents = myBlob.DownloadText() + "\n";
             }
             catch (Exception g)
             {
@@ -148,16 +155,46 @@ namespace Program5
             }
         }
 
+        protected void ListBox2_OnClick(object sender, EventArgs e)
+        {
+            
+        }
         protected void ListBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ListBox2.SelectedValue == "") return;
-            item = ourPlayer.SearchItems(ListBox2.SelectedValue, SearchType.Album);
+            if (ListBox2.Items[ListBox2.SelectedIndex].Text == "") return;
 
-            ListBox2.Items.Clear();
+            if (state == 0) //This is when there's nothing in the list box
+                return;
 
-            for (int i = 0; i < item.Albums.Total; i++)
+            else if (state == 1)
             {
-                ListBox2.Items.Add(item.Albums.Items[i].Name.ToString());
+                item = ourPlayer.SearchItems(ListBox2.Items[ListBox2.SelectedIndex].Text, SearchType.Album);
+                ErrorText.Text = "Selected Artist: " + ListBox2.Items[ListBox2.SelectedIndex].Text;
+                Label1.Text = "List of Albums";
+                ListBox2.Items.Clear();
+
+                for (int i = 0; i < item.Albums.Items.Count; i++)
+                {
+                    ListBox2.Items.Add(item.Albums.Items[i].Name.ToString());
+                }
+
+                if (ListBox2.Items.Count > 0) state = 2;
+                else state = 0;
+            }
+
+            else if (state == 2)
+            {
+                item = ourPlayer.SearchItems(ListBox2.Items[ListBox2.SelectedIndex].Text, SearchType.Track);
+                ErrorText.Text = "Selected Album: " + ListBox2.Items[ListBox2.SelectedIndex].Text;
+                Label1.Text = "List of Tracks";
+                ListBox2.Items.Clear();
+
+                for (int i = 0; i < item.Tracks.Items.Count; i++)
+                {
+                    ListBox2.Items.Add(item.Tracks.Items[i].Name.ToString());
+                }
+
+                state = 0;
             }
         }
     }
