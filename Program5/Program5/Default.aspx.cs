@@ -14,6 +14,7 @@ using Microsoft.WindowsAzure.Storage.Table;  //For table storage
 using Microsoft.Azure;     //Configuration manager
 using Microsoft.WindowsAzure.Storage;   //For storage in general
 using System.IO;
+using Microsoft.ApplicationInsights;
 
 namespace Program5
 {

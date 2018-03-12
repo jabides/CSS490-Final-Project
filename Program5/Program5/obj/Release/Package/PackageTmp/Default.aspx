@@ -18,19 +18,17 @@
         <div class="col-md-4">
             <p>
     
-                <asp:ListBox ID="ListBox1" runat="server" Width="669px" OnSelectedIndexChanged="ListBox1_SelectedIndexChanged"></asp:ListBox>
+              
                 <br />
                 <asp:Button ID="authenticateButton" runat="server" OnClick="authenticateButton_Click" Text="login" />
+                <br />
+                <asp:Label ID="Label1" runat="server"></asp:Label>
+                <br />
+                <asp:ListBox ID="ListBox2" runat="server" Width="800px" Height="300px" OnSelectedIndexChanged="ListBox2_SelectedIndexChanged" AutoPostBack="True"></asp:ListBox>
             </p>
         </div>
-        <div class="col-md-4">
-            <p>
-                
-                &nbsp;</p>
-        </div>
-        <div class="col-md-4">
-          
-        </div>
+     
+       
     </div>
 
 </asp:Content>
