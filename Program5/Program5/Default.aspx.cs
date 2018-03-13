@@ -32,15 +32,47 @@ namespace Program5
         private const string apiKey = "&apikey=c1efc87437d8289718e51d58de5be083";
         private static string inTrack, inArtist, inAlbum;
         private static CloudTable artistcloudtable;
+        private static bool login;
 
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!login)
+            {
+                //Create the auth object
+                auth = new ClientCredentialsAuth()
+                {
+                    //Your client Id
+                    ClientId = "233de2f259b54609bedb58dfe5f037d7",
+                    //Your client secret UNSECURE!!
+                    ClientSecret = "588ddce164f7461283f80be878c43b37",
+                    //How many permissions we need?
+                    Scope = Scope.UserReadPrivate,
+                };
+                //With this token object, we now can make calls
+                Token token = auth.DoAuth();
+                ourPlayer = new SpotifyWebAPI()
+                {
+                    TokenType = token.TokenType,
+                    AccessToken = token.AccessToken,
+                    UseAuth = true
+                };
+                login = true;
+            }
 
+            if (Label1.Text == "List of artists")
+                state = 1;
+            else if (Label1.Text == "List of albums")
+                state = 2;
+            else if (Label1.Text == "List of tracks")
+                state = 3;
+
+            
         }
 
         protected void searchButton_Click(object sender, EventArgs e)
         {
+            lyricsBox.Text = "";
             state = 0;
             if (String.IsNullOrWhiteSpace(searchEntryBox.Text) || ourPlayer == null)
             {
@@ -55,7 +87,7 @@ namespace Program5
                 ListBox2.Items.Add(item.Artists.Items[i].Name.ToString());
             }
 
-            if (ListBox2.Items.Count > 0) state = 1; //This allows for the user to click on an album
+            state = 1; //This allows for the user to click on an album
 
             CloudStorageAccount myAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
             CloudBlobClient blobClient = myAccount.CreateCloudBlobClient();
@@ -111,24 +143,7 @@ namespace Program5
 
         protected void authenticateButton_Click(object sender, EventArgs e)
         {
-            //Create the auth object
-            auth = new ClientCredentialsAuth()
-            {
-                //Your client Id
-                ClientId = "233de2f259b54609bedb58dfe5f037d7",
-                //Your client secret UNSECURE!!
-                ClientSecret = "588ddce164f7461283f80be878c43b37",
-                //How many permissions we need?
-                Scope = Scope.UserReadPrivate,
-            };
-            //With this token object, we now can make calls
-            Token token = auth.DoAuth();
-            ourPlayer = new SpotifyWebAPI()
-            {
-                TokenType = token.TokenType,
-                AccessToken = token.AccessToken,
-                UseAuth = true
-            };
+            
         }
 
         public class ArtistData
@@ -179,7 +194,7 @@ namespace Program5
                 ErrorText.Text = "Selected Artist: " + ListBox2.Items[ListBox2.SelectedIndex].Text;
                 inArtist = ListBox2.Items[ListBox2.SelectedIndex].Text;
                 inArtist.Replace(' ', '%');
-                Label1.Text = "List of Albums";
+                Label1.Text = "List of albums";
                 ListBox2.Items.Clear();
 
                 for (int i = 0; i < item.Albums.Items.Count; i++)
@@ -187,17 +202,17 @@ namespace Program5
                     ListBox2.Items.Add(item.Albums.Items[i].Name.ToString());
                 }
 
-                if (ListBox2.Items.Count > 0) state = 2;
-                else state = 0;
+                state = 2;
             }
         
 
             else if (state == 2)
             {
+            
                 item = ourPlayer.SearchItems(ListBox2.Items[ListBox2.SelectedIndex].Text, SearchType.Track);
                 ErrorText.Text = "Selected Album: " + ListBox2.Items[ListBox2.SelectedIndex].Text;
                 inAlbum = ListBox2.Items[ListBox2.SelectedIndex].Text;
-                Label1.Text = "List of Tracks";
+                Label1.Text = "List of tracks";
                 ListBox2.Items.Clear();
 
                 for (int i = 0; i < item.Tracks.Items.Count; i++)
@@ -205,7 +220,7 @@ namespace Program5
                     ListBox2.Items.Add(item.Tracks.Items[i].Name.ToString());
                 }
 
-                if (ListBox2.Items.Count > 0) state = 3;
+                state = 3;
             }
             else if (state == 3)
             {
@@ -224,38 +239,46 @@ namespace Program5
                         msg = client.GetAsync(target.AbsoluteUri).Result;
                     }
                     String result = String.Empty;
-                    result = msg.Content.ReadAsStringAsync().Result;
-                    List<String> parsed = new List<string>();
-                    parsed = result.Split(',').ToList();
-                    String match = String.Empty;
-                    for (int i = 0; i < parsed.Count; i++)
+                    try
                     {
-                        if (parsed.ElementAt(i).Contains("lyrics_body"))
+                        result = msg.Content.ReadAsStringAsync().Result;
+                        List<String> parsed = new List<string>();
+                        parsed = result.Split(',').ToList();
+                        String match = String.Empty;
+                        for (int i = 0; i < parsed.Count; i++)
                         {
-                            match = parsed.ElementAt(i);
-                            break;
-                        }
-                    }
-                    if (match.Equals(String.Empty))
-                    {
-                        ErrorText.Text = "This song has no lyrics, please try another search.";
-                        state = 0; //reset.    
-                        hasLyrics = false;
-                    }
-                    if (hasLyrics)
-                    {
-                        List<String> lyricParsed = new List<string>();
-                        lyricParsed = match.Split('"').ToList();
-
-                        for (int i = 0; i < lyricParsed.Count; i++)
-                        {
-                            if (lyricParsed.ElementAt(i).Contains(":"))
+                            if (parsed.ElementAt(i).Contains("lyrics_body"))
                             {
-                                lyricsBox.Text = lyricParsed.ElementAt(i + 1).ToString().Replace("******* This Lyrics is NOT " +
-                                    "for Commercial use *******", "").Replace(@"\n", Environment.NewLine);
+                                match = parsed.ElementAt(i);
+                                break;
+                            }
+                        }
+                        if (match.Equals(String.Empty))
+                        {
+                            ErrorText.Text = "This song has no lyrics, please try another search.";
+                            state = 0; //reset.    
+                            hasLyrics = false;
+                        }
+                        if (hasLyrics)
+                        {
+                            List<String> lyricParsed = new List<string>();
+                            lyricParsed = match.Split('"').ToList();
+
+                            for (int i = 0; i < lyricParsed.Count; i++)
+                            {
+                                if (lyricParsed.ElementAt(i).Contains(":") && i < (lyricParsed.Count - 1))
+                                {
+                                    lyricsBox.Text = lyricParsed.ElementAt(i + 1).ToString().Replace("******* This Lyrics is NOT " +
+                                        "for Commercial use *******", "").Replace(@"\n", Environment.NewLine);
+                                }
                             }
                         }
                     }
+                    catch (Exception j)
+                    {
+                        ErrorText.Text = "Couldn't display lyrics...";
+                    }
+                    
                 }
                 //create artistcloudtable entry here.
                 DynamicTableEntity searchRecord = new DynamicTableEntity();

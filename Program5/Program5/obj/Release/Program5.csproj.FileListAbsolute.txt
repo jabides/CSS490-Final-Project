@@ -57,3 +57,8 @@ C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Progra
 C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.AI.Web.xml
 C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\Microsoft.ApplicationInsights.xml
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\System.Net.Http.Extensions.dll
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\System.Net.Http.Primitives.dll
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\System.Net.Http.Extensions.xml
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\bin\System.Net.Http.Primitives.xml
+C:\Users\JASUS\Documents\CSS 490\Programs\Program5\Final Project\Program5\Program5\obj\Release\Program5.csproj.App.config
