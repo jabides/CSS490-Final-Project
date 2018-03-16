@@ -60,6 +60,7 @@ namespace Program5
                 login = true;
             }
 
+
             if (Label1.Text == "List of artists")
                 state = 1;
             else if (Label1.Text == "List of albums")
@@ -78,63 +79,71 @@ namespace Program5
             {
                 return;
             }
-            ListBox2.Items.Clear();
-            Label1.Text = "List of artists";
-            item = null;
-            item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist);
-            for (int i = 0; i < item.Artists.Items.Count; i++)
-            {
-                ListBox2.Items.Add(item.Artists.Items[i].Name.ToString());
-            }
-
-            state = 1; //This allows for the user to click on an album
-
-            CloudStorageAccount myAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
-            CloudBlobClient blobClient = myAccount.CreateCloudBlobClient();
-            CloudBlobContainer container = blobClient.GetContainerReference("css490finalproject"); //Our blob for collecting searches
-            container.CreateIfNotExists();
-            CloudBlockBlob myBlob = container.GetBlockBlobReference("spotifysearchresults.txt"); //The text file for storing the searches
-            string contents = "";
-            try
-            {
-                contents = myBlob.DownloadText() + "\n";
-            }
-            catch (Exception)
-            {
-
-            }
-
-            myBlob.UploadText(contents + searchEntryBox.Text + "\n");       //This is how we add the search result to the list of search results in blob
-
-
-            //This is where we add the list of artists to the artistcloudtable
-            CloudTableClient tableClient = null;
-            artistcloudtable = null;
-            try
-            {
-
-                tableClient = myAccount.CreateCloudTableClient();
-                artistcloudtable = tableClient.GetTableReference("Artists");
-            }
-            catch (Exception)
-            {
-                ErrorText.Text = "Error: Problem connecting to cloud artistcloudtable.";
-                return;
-            }
-
 
             try
             {
-                artistcloudtable.CreateIfNotExists();
+                ListBox2.Items.Clear();
+                Label1.Text = "List of artists";
+                item = null;
+                item = ourPlayer.SearchItems(searchEntryBox.Text.ToString(), SearchType.Artist);
+                for (int i = 0; i < item.Artists.Items.Count; i++)
+                {
+                    ListBox2.Items.Add(item.Artists.Items[i].Name.ToString());
+                }
+
+                state = 1; //This allows for the user to click on an album
+
+                CloudStorageAccount myAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
+                CloudBlobClient blobClient = myAccount.CreateCloudBlobClient();
+                CloudBlobContainer container = blobClient.GetContainerReference("css490finalproject"); //Our blob for collecting searches
+                container.CreateIfNotExists();
+                CloudBlockBlob myBlob = container.GetBlockBlobReference("spotifysearchresults.txt"); //The text file for storing the searches
+                string contents = "";
+                try
+                {
+                    contents = myBlob.DownloadText() + "\n";
+                }
+                catch (Exception)
+                {
+
+                }
+
+                myBlob.UploadText(contents + searchEntryBox.Text + "\n");       //This is how we add the search result to the list of search results in blob
+
+
+                //This is where we add the list of artists to the artistcloudtable
+                CloudTableClient tableClient = null;
+                artistcloudtable = null;
+                try
+                {
+
+                    tableClient = myAccount.CreateCloudTableClient();
+                    artistcloudtable = tableClient.GetTableReference("Artists");
+                }
+                catch (Exception)
+                {
+                    ErrorText.Text = "Error: Problem connecting to cloud artistcloudtable.";
+                    return;
+                }
+
+
+                try
+                {
+                    artistcloudtable.CreateIfNotExists();
+                }
+                catch (Exception)
+                {
+                    ErrorText.Text = "Error: Could not create artistcloudtable...";
+                }
+
+                ErrorText.Text = "Search successfully completed.";
+
+                ArtistData artists = new ArtistData();
             }
-            catch (Exception)
+            catch (Exception l)
             {
-                ErrorText.Text = "Error: Could not create artistcloudtable...";
+                ErrorText.Text = "Error: problem finding/loading artists.";
             }
-
-            ErrorText.Text = "Search successfully completed.";
-
-            ArtistData artists = new ArtistData();
 
 
         }
