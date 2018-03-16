@@ -143,6 +143,8 @@ namespace Program5
             catch (Exception l)
             {
                 ErrorText.Text = "Error: problem finding/loading artists.";
+                //ErrorText.Text = l.ToString();
+                login = false;
             }
 
 
